@@ -31,10 +31,7 @@ class ViewController: UICollectionViewController, UICollectionViewDelegateFlowLa
   }
 
   override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    var trueRow: Int = indexPath.row
-    if indexPath.row > models.count - 1 {
-      trueRow -= models.count
-    }
+    let trueRow: Int = indexPath.row % models.count
 
     print("true row   : \(trueRow)")
     print("default row: \(indexPath.row)")
