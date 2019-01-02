@@ -10,6 +10,8 @@ import UIKit
 
 class ViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate {
 
+  private var onceOnly: Bool =  false
+
   override func viewDidLoad() {
     super.viewDidLoad()
     let flowLayout = UICollectionViewFlowLayout()
@@ -27,7 +29,7 @@ class ViewController: UICollectionViewController, UICollectionViewDelegateFlowLa
   }
 
   override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return models.count * 2
+    return (models.count * 2) + 1
   }
 
   override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -48,25 +50,40 @@ class ViewController: UICollectionViewController, UICollectionViewDelegateFlowLa
     return CGSize(width: self.view.frame.width, height: self.view.frame.height)
   }
 
-  override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-    let scrollViewContentWidth = scrollView.contentSize.width
-    var scrollViewContentOffset: CGPoint = scrollView.contentOffset
-    if scrollViewContentOffset.x < scrollViewContentWidth / 4 {
-      scrollViewContentOffset.x += scrollViewContentWidth / 2
-      scrollView.contentOffset = scrollViewContentOffset
-    } else if scrollViewContentOffset.x > scrollViewContentWidth / 4 * 3 {
-      scrollViewContentOffset.x -= scrollViewContentWidth / 2
-      scrollView.contentOffset = scrollViewContentOffset
+  override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    if !onceOnly {
+      let indexToScrollTo = IndexPath(item: models.count, section: 0)
+      self.collectionView.scrollToItem(at: indexToScrollTo, at: .left, animated: false)
+      onceOnly = true
     }
   }
+
+  override func viewDidLayoutSubviews() {
+    if collectionView.indexPathsForVisibleItems.contains(IndexPath(item: (models.count * 2), section: 0)) {
+      collectionView.scrollToItem(at: IndexPath(item: models.count - 1, section: 0), at: [.centeredHorizontally, .centeredVertically], animated: false)
+    }
+
+    if collectionView.indexPathsForVisibleItems.contains(IndexPath(item: 0, section: 0)) {
+      collectionView.scrollToItem(at: IndexPath(item: models.count + 1, section: 0), at: [.centeredHorizontally, .centeredVertically], animated: false)
+    }
+  }
+
+//  override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//    let scrollViewContentWidth = scrollView.contentSize.width
+//    var scrollViewContentOffset: CGPoint = scrollView.contentOffset
+//    if scrollViewContentOffset.x < scrollViewContentWidth / 4 {
+//      scrollViewContentOffset.x += scrollViewContentWidth / 2
+//      scrollView.contentOffset = scrollViewContentOffset
+//    } else if scrollViewContentOffset.x > scrollViewContentWidth / 4 * 3 {
+//      scrollViewContentOffset.x -= scrollViewContentWidth / 2
+//      scrollView.contentOffset = scrollViewContentOffset
+//    }
+//  }
 
   private let models: [Model] = [
     .init(label: 0, color: .random),
     .init(label: 1, color: .random),
-    .init(label: 2, color: .random),
-    .init(label: 3, color: .random),
-    .init(label: 4, color: .random),
-    .init(label: 5, color: .random)
+    .init(label: 2, color: .random)
   ]
 }
 
