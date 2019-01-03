@@ -27,6 +27,9 @@ class ViewController: UICollectionViewController, UICollectionViewDelegateFlowLa
   }
 
   override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    if models.count == 1 {
+      return models.count * 4
+    }
     return models.count * 2
   }
 
